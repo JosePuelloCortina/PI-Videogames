@@ -1,5 +1,5 @@
 const { Genre } = require('../db'); 
-const {v4: uuidv4 } = require('uuid');
+//const {v4: uuidv4 } = require('uuid');
 const axios = require('axios');
 
 const initializeGenre = async() =>{
@@ -8,7 +8,7 @@ const initializeGenre = async() =>{
 
         response = response.data.results.forEach( async g =>{
             const result={
-                id: uuidv4(),
+                
                 name: g.slug
             }
             const createGenre = await Genre.create(result)

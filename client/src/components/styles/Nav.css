@@ -1,0 +1,36 @@
+.nav {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: rgb(12, 7, 31);
+}
+.nav {
+    background-position-x: center;
+}
+
+.enlace {
+    float: left;
+
+    display: block;
+    color: #c0eee6;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+.enlace:hover {
+    background-color: #f4511e;
+}
+
+.box {
+    float: right;
+
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 30px 19px;
+    text-decoration: none;
+
+  
+}

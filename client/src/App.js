@@ -1,12 +1,14 @@
 import './App.css';
-import {Routes,Route} from "react-router-dom";
+import { Routes, Route} from "react-router-dom";
 import Nav from './components/Nav';
 import LandingPage from './components/LandingPage';
 import Home from './components/Home';
 import Detail from './components/Detail'
 import Order from './components/Order';
+// import Filtrado from './components/Filtrado';
 
-// import Form from './components/Form';
+
+import Form from './components/Form';
 
 function App() {
   return (
@@ -16,7 +18,7 @@ function App() {
           <Route exact path ="/" element={<LandingPage/>}/>
           <Route exact path ="/home" element = {<><Nav/><Order/><Home/></>}/>
           <Route exact path ="/home/:id" element = {<><Nav/><Detail/></>}/>
-         {/* <Route exact path ="/create" element = {<Form/>}/>  */}
+          <Route exact path ="/create" element = {<><Nav/><Form/></>}/> 
         </Routes>  
       
         

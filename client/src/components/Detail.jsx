@@ -6,17 +6,21 @@ import { useEffect } from 'react';
 
 import { getDetail } from './actions';
 import './styles/Detail.css';
+import { useState } from 'react';
 
 export default function Detail(){
     const { id } = useParams();
     const dispatch = useDispatch();
+
+    
 
     useEffect(() =>{
         dispatch(getDetail(id));
     }, [dispatch])
 
     const detail = useSelector(state => state.detail)
-    console.log(detail)
+    
+
 
     return(
         <div>
@@ -33,7 +37,13 @@ export default function Detail(){
                         <div dangerouslySetInnerHTML={{__html: detail.description}}></div>
                         <p>{detail.released}</p>
                         <p>{detail.rating}</p>
-                        {detail.plataform}
+                        <div>
+                            {detail.platforms.map((p) =>{
+                                return(
+                                    <p>{p.platform.slug}</p>
+                                )
+                            })}
+                        </div> 
                         <div>
                             {
                                 detail.genres.map((g) =>{

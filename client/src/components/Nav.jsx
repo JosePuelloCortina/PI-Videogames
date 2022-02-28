@@ -29,7 +29,7 @@ export default function Nav({id}){
                 <h3>Crear Videogame</h3>
             </NavLink>
             <div className="box">
-                <input type="text" placeholder="Buscar Videogame" onChange={onInputChange} value={input} />
+                <input type="text" placeholder="Buscar Videogames" onChange={onInputChange} value={input} />
                 <NavLink to={`/home/${id}`}>
                     <button onClick={onSubmit} >Search</button>
                 </NavLink>

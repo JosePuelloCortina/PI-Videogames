@@ -6,23 +6,29 @@ const axios = require('axios');
 
 server.get("/", async function(req, res, next){
     try {
-        let response = await axios.get('https://api.rawg.io/api/games?key=216850b07c7249198b54ada2f2630d03&page_size=40');
+        let apiGames = [];
+        for(i=1; i <= 5; i++){
+            let response = await axios.get(`https://api.rawg.io/api/games?key=216850b07c7249198b54ada2f2630d03&page=${i}`);
+            response = response.data.results.map( v => {                      
+                const result =  {
+                    id: v.id,
+                    name: v.name,
+                    image: v.background_image,
+                    released: v.released,
+                    rating: v.rating,
+                    platforms: v.platforms.map(e => e.platform.slug),
+                    genres: v.genres
+                }  
+                apiGames.push(result)  
+            }) 
+            // apiGames.push(response);
+        }
         
-        response = response.data.results.map( v => {                      
-            return {
-                id: v.id,
-                name: v.name,
-                image: v.background_image,
-                released: v.released,
-                rating: v.rating,
-                platforms: v.platforms.map(e => e.platform.slug),
-                genres: v.genres.map(g => g.slug)
-            }    
-        })
+
         Videogame.findAll({include: {model: Genre}})
         .then( dbVideogame =>{
 
-            dbVideogame = dbVideogame.concat(response)
+            dbVideogame = dbVideogame.concat(apiGames)
             res.status(200).json(dbVideogame)
 
         })    
@@ -66,13 +72,39 @@ server.get("/search", async function(req, res, next){
                 include: {model: Genre}
             })
             if(dbVideogame && dbVideogame.length) result = result.concat(dbVideogame)
-        axios.get(`https://api.rawg.io/api/games?search=${name}&key=216850b07c7249198b54ada2f2630d03`)
-        .then((res) =>{
-            result = result.concat(res.data)
-            return res.json(result)
-        }).catch(() =>{
-            return res.json(result)
-        })
+            let searchVg = [];
+            let response = await axios.get(`https://api.rawg.io/api/games?key=216850b07c7249198b54ada2f2630d03&search=${name}`)
+            // console.log(response.data)
+            response = response.data.results.map( v => {                      
+                const result =  {
+                    id: v.id,
+                    name: v.name,
+                    image: v.background_image,
+                    released: v.released,
+                    rating: v.rating,
+                    platforms: v.platforms.map(e => e.platform.slug),
+                    genres: v.genres
+                }  
+                searchVg.push(result)  
+            }) 
+            let all = result.concat(searchVg)
+            res.send(all)
+        // .then((res) =>{
+        //     result = result.concat(res.data)
+        //     return res.json(result({
+                
+        //             id: id,
+        //             name: name,
+        //             image: background_image,
+        //             released: released,
+        //             rating: rating,
+        //             platforms: platforms.map(e => e.platform.slug),
+        //             genres: genres.map(g => g.slug)
+                
+        //     }))
+        // }).catch(() =>{
+        //     return res.json(result)
+        // })
         
         
     } catch (error) {
@@ -82,7 +114,7 @@ server.get("/search", async function(req, res, next){
 })
 server.post("/add", function(req, res, next){
     const { name, image, released, rating, description, platforms, genre} = req.body;
-    if(!name || !image || !released || !rating || !description || !platforms ){
+    if(!name || !image || !released || !rating || !description || !platforms || !genre ){
         return res.status(422).json({error: "No se enviaron todos los datos"})
     }
     Videogame.create({

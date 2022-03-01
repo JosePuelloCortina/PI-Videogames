@@ -20,7 +20,7 @@ server.get("/", async function(req, res, next){
                     genres: v.genres
                 }  
                 apiGames.push(result)  
-            }) 
+            })  
             // apiGames.push(response);
         }
         
@@ -51,6 +51,17 @@ server.get("/id/:id", async function(req, res, next){
             })
         }else{
             videogame = (await axios.get(`https://api.rawg.io/api/games/${id}?key=216850b07c7249198b54ada2f2630d03`)).data
+            const r = {
+                id: videogame.id,
+                name: videogame.name,
+                image: videogame.background_image,
+                description: videogame.description,
+                released: videogame.released,
+                rating: videogame.rating,
+                platforms: videogame.platforms.map(e => e.platform.slug),
+                genres: videogame.genres
+            }
+            videogame = r;
         }
         res.send(videogame ? videogame : "No hay videogame!!")
     } catch (error) {
@@ -74,7 +85,6 @@ server.get("/search", async function(req, res, next){
             if(dbVideogame && dbVideogame.length) result = result.concat(dbVideogame)
             let searchVg = [];
             let response = await axios.get(`https://api.rawg.io/api/games?key=216850b07c7249198b54ada2f2630d03&search=${name}`)
-            // console.log(response.data)
             response = response.data.results.map( v => {                      
                 const result =  {
                     id: v.id,
@@ -120,7 +130,7 @@ server.post("/add", function(req, res, next){
     Videogame.create({
         name: name,
         image: image,
-        released: released,
+        released: released, 
         rating: rating,
         description: description,
         platforms: platforms,
@@ -141,6 +151,6 @@ server.post("/add", function(req, res, next){
         }) 
     }).catch((error) => {
         next(error)
-    })
-})
+    }) 
+}) 
 module.exports = server;

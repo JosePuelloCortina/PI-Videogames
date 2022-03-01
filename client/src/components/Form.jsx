@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
-import { NavLink,  } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
 import './styles/Form.css';
+import { getAllGenres } from './actions';
+
 
 
 export function validate(input){
@@ -29,19 +31,27 @@ export function validate(input){
     if(!input.platforms){
         errors.platforms = 'Platforms is required'
     }
-    if(!input.genres){
-        errors.genres = 'Genres is required'
-    }
+    // if(!input.genres){
+    //     errors.genres = 'Genres is required'
+    // }
 
     return errors;
 }
 
 export default function Form(){
+    const dispatch = useDispatch();
+    let navigate = useNavigate();
+    const generos = useSelector((state)=> state.genres)
     
 
     const [ input, setInput] = useState({
-        
-        
+        name: '',
+        image: '',
+        released: '',
+        rating: '',
+        description: '',
+        platforms: '',
+        genre:[]
     })
 
     const [errors, setErrors] = useState({
@@ -51,9 +61,25 @@ export default function Form(){
         rating: '',
         description: '',
         platforms: '',
-        genres: ''
+        genre:[]
+        
         
     })
+
+    function handleSelect(e){
+        setInput({
+            ...input,
+            genre: [...input.genre, e.target.value]
+        })
+        setErrors(validate({
+            ...input,
+          [e.target.name]: e.target.value
+        }));
+        
+    }
+    useEffect(() => {
+        dispatch(getAllGenres());
+    }, [])
       
 
     function onInputChange(e)  {
@@ -78,8 +104,9 @@ export default function Form(){
         axios.post('http://localhost:3001/videogames/add', input)
         .then(() =>{
             alert("Se creo la Videogame");
-        // recargar la pagina 
+            navigate('/home')
         })
+
     }
 
     return(
@@ -167,36 +194,22 @@ export default function Form(){
                 </div>
                 <div>            
                     <label>Genres: </label><br/>
-                    <select onChange={onInputChange} name="genre" value={input.genres} className={errors.genres && "danger"}  >
-                        <option>Genres</option>
-                        <option value="1">action</option>
-                        <option value="2">indie</option>
-                        <option value="3">adventure</option>
-                        <option value="4">role-playing-games-rpg</option>
-                        <option value="5">strategy</option>
-                        <option value="6">shooter</option>
-                        <option value="7">casual</option>
-                        <option value="8">simulation</option>
-                        <option value="9">puzzle</option>
-                        <option value="10">arcade</option>
-                        <option value="11">platformer</option>
-                        <option value="12">racing</option>
-                        <option value="13-multiplayer">massively-multiplayer</option>
-                        <option value="14">sports</option>
-                        <option value="15">fighting</option>
-                        <option value="16">family</option>
-                        <option value="17">board-games</option>
-                        <option value="18">educational</option>
-                        <option value="19">card</option>
-                        
+                    <select onChange={handleSelect} name="genre" value={input.genre} >
+                        <option >Genres</option>
+                        {
+                            generos.map((g) => (                            
+                                <option value={g.id}>{g.name}</option>
+                                ))
+                        }                        
                     </select>
+                    <ul className='listaGeneros'><li>{input.genre.map(el => el + " ,")}</li></ul> 
                     {
-                        errors.genres && (<span className="danger">{errors.genres}</span>)
+                        errors.genre && (<span className="danger">{errors.genre}</span>)
                     }
                     
                     
                 </div>
-                <input type='submit' disabled={errors.name || errors.image || errors.released || errors.rating || errors.description || errors.platforms || errors.genres ? true : false}/>
+                <input type='submit' disabled={errors.name || errors.image || errors.released || errors.rating || errors.description || errors.platforms || errors.genre? true : false}/>
                  
             </form>
         </div>

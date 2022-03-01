@@ -1,4 +1,4 @@
-import { CREATE_VIDEOGAMES, FILTER_BY_GENRES, GET_ALL_GENRES, GET_ALL_VIDEOGAMES, GET_DETAIL, GET_SEARCH_VIDEOGAMES, SORT, FILTER_RATING } from '../actions/index';
+import { CREATE_VIDEOGAMES, FILTER_BY_GENRES, GET_ALL_GENRES, GET_ALL_VIDEOGAMES, GET_DETAIL, GET_SEARCH_VIDEOGAMES, SORT, FILTER_RATING, FILTER_BACK } from '../actions/index';
 import { ASCENDENTES } from "../constantes/sort";
 
 const initialState = {
@@ -53,7 +53,14 @@ function rootReducer(state = initialState, action){
                 ...state,
                 filters: genFiltered
             }
-        // case FILTER_BACK:
+        case FILTER_BACK:
+            const apiBack = state.videogames;
+            const existente = action.payload === 'All' ? apiBack : action.payload === 'back' ? apiBack.filter(b => isNaN(b.id)) : apiBack.filter(a => !isNaN(a.id))
+            return{
+                ...state,
+                filters: existente
+
+            }
         case FILTER_RATING: 
             const stateRating = state.videogames;
             const rango = action.payload === 'All' ? stateRating : stateRating.filter(r => r.rating <= action.payload && r.rating >= (action.payload - 1))

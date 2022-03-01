@@ -19,8 +19,7 @@ export default function Detail(){
     }, [dispatch])
 
     const detail = useSelector(state => state.detail)
-    
-
+       
 
     return(
         <div>
@@ -33,17 +32,18 @@ export default function Detail(){
                         <div className="header">
                             <h2>{detail.name}</h2>
                         
-                        <img src={detail.background_image} alt="img not found" width="600px" /><br/>
+                        <img src={detail.background_image || detail.image} alt="img not found" width="600px" /><br/>
                         <div dangerouslySetInnerHTML={{__html: detail.description}}></div>
                         <p>{detail.released}</p>
                         <p>{detail.rating}</p>
-                        <div>
+                        <p>{detail.platforms}</p>
+                        {/* <div>
                             {detail.platforms.map((p) =>{
                                 return(
-                                    <p>{p.platform.slug}</p>
+                                    <p>{p.platforms}</p>
                                 )
                             })}
-                        </div> 
+                        </div>  */}
                         <div>
                             {
                                 detail.genres.map((g) =>{

@@ -5,7 +5,7 @@ import { useDispatch, useSelector  } from "react-redux";
 import Card from './Card';
 import './styles/Cards.css';
 
-import { getAllVideogames, getAllGenres, filterByGenres, filterRating} from "./actions";
+import { getAllVideogames, getAllGenres, filterByGenres, filterRating, filterBack} from "./actions";
 
 import Paginado from "./Paginado";
 
@@ -13,7 +13,7 @@ import Paginado from "./Paginado";
 export default function Home(){
 
     
-    // const[search, setSearch] = useState("")
+
 
     const dispatch = useDispatch();
 
@@ -41,11 +41,11 @@ export default function Home(){
         dispatch(filterByGenres(e.target.value));
     }
 
-    // function handleFilterBack(e){
-    //     e.preventDefault();
-    //     setCurrentPage(1);
-    //     dispatch(filterBack(e.target.value));
-    // }
+    function handleFilterBack(e){
+        e.preventDefault();
+        setCurrentPage(1);
+        dispatch(filterBack(e.target.value));
+    }
 
     function handleFilterRating(e){
         e.preventDefault();
@@ -79,10 +79,6 @@ export default function Home(){
                 <option value="card">card</option>
             </select>
 
-            <select >
-                <option value="back">Creados</option>
-                <option value="api">Existentes</option>
-            </select>
 
             <select onChange={handleFilterRating} >
                 <option value="All">Rating</option>
@@ -91,6 +87,12 @@ export default function Home(){
                 <option value="3">2 - 3</option>
                 <option value="4">3 - 4</option>
                 <option value="5">4 - 5</option>
+            </select>
+
+            <select onChange={handleFilterBack}>
+                <option value="All">All</option>
+                <option value="back">Creado</option>
+                <option value="api">Existente</option>
             </select>
 
             

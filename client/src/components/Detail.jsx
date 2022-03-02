@@ -4,28 +4,31 @@ import { useParams } from 'react-router-dom';
 
 import { useEffect } from 'react';
 
-import { getDetail } from './actions';
+import { getDetail, limpiarDetail } from './actions';
 import './styles/Detail.css';
-import { useState } from 'react';
+
 
 export default function Detail(){
     const { id } = useParams();
     const dispatch = useDispatch();
+    const detail = useSelector(state => state.detail)
+    
 
     
 
     useEffect(() =>{
-        dispatch(getDetail(id));
-    }, [dispatch])
+        dispatch(getDetail(id))
+        return () => {dispatch(limpiarDetail())}
+    }, [dispatch, id])
 
-    const detail = useSelector(state => state.detail)
+    
        
 
     return(
         <div>
             <div>
                 {
-                    detail != '' ?
+                    detail.name?
                     <div className='detail' key={detail.id}>
                         
 
@@ -46,11 +49,7 @@ export default function Detail(){
                         </div>  */}
                         <div>
                             {
-                                detail.genres.map((g) =>{
-                                    return(
-                                        <p>{g.name}</p>
-                                    )
-                                })
+                                detail.genres.map((g) =>  <p>{g.slug}</p>)
                             }
                         </div>
                         </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
 import './styles/Form.css';
@@ -50,7 +50,7 @@ export default function Form(){
         released: '',
         rating: '',
         description: '',
-        platforms: '',
+        platforms: [],
         genre:[]
     })
 
@@ -60,17 +60,43 @@ export default function Form(){
         released: '',
         rating: '',
         description: '',
-        platforms: '',
+        platforms: [],
         genre:[]
         
         
     })
 
     function handleSelect(e){
-        setInput({
+        if(input.genre.includes(e.target.value)){
+            setInput({
+                ...input,
+                genre: input.genre.filter(ge => ge !== e.target.value)
+            })
+        }else{
+            setInput({
+                ...input,
+                genre: [...input.genre, e.target.value]
+            })
+        }
+        setErrors(validate({
             ...input,
-            genre: [...input.genre, e.target.value]
-        })
+          [e.target.name]: e.target.value
+        }));
+        
+    }
+
+    function handleSelectPlat(e){
+        if(input.platforms.includes(e.target.value)){
+            setInput({
+                ...input,
+                platforms: input.platforms.filter(pla => pla !== e.target.value)
+            })
+        }else{
+            setInput({
+                ...input,
+                platforms: [...input.platforms, e.target.value]
+            })
+        }
         setErrors(validate({
             ...input,
           [e.target.name]: e.target.value
@@ -79,7 +105,7 @@ export default function Form(){
     }
     useEffect(() => {
         dispatch(getAllGenres());
-    }, [])
+    }, [dispatch])
       
 
     function onInputChange(e)  {
@@ -139,7 +165,7 @@ export default function Form(){
                     }
                 </div> 
                 <div>
-                    <label>released: </label>
+                    <label>Released: </label>
                     <input 
                         type="date" 
                         name="released" 
@@ -181,35 +207,41 @@ export default function Form(){
                 </div>
                 <div>
                     <label>Platforms: </label>
-                    <input 
-                        type="text" 
-                        name="platforms" 
-                        value={input.platforms} 
-                        onChange={onInputChange}
-                        className={errors.platforms && "danger"}
-                    />
+                    <select onChange={handleSelectPlat} name="platforms" value={input.platforms} className={errors.platforms && 'danger'}>
+                        <option >Plataformas</option>
+                        <option value="xbox">Xbox</option>
+                        <option value="xbox-360">Xbox 360</option>
+                        <option value="xbox-one">Xbox One</option>
+                        <option value="playstation-2">Playstation 2</option>
+                        <option value="playstation-3">Playstation 3</option>
+                        <option value="playstation-4">Playstation 4</option>
+                        <option value="playstation-5">Playstation 5</option>
+                        <option value="pc">Pc</option>
+                        <option value="linux">Linux</option>
+                    </select>
+                    <p>{input.platforms.map(el => el + " ,")}</p>
                     {
                         errors.platforms && (<span className="danger">{errors.platforms}</span>)
                     }                        
                 </div>
                 <div>            
-                    <label>Genres: </label><br/>
-                    <select onChange={handleSelect} name="genre" value={input.genre} >
+                    <label>Genres: </label>
+                    <select onChange={handleSelect} name="genre" value={input.genre} className={errors.genre && 'danger'} >
                         <option >Genres</option>
                         {
-                            generos.map((g) => (                            
-                                <option value={g.id}>{g.name}</option>
+                            generos.length && generos.map((g, i) => (                            
+                                <option key={g.id} value={g.name}>{g.name}</option>
                                 ))
                         }                        
                     </select>
-                    <ul className='listaGeneros'><li>{input.genre.map(el => el + " ,")}</li></ul> 
+                    <p>{input.genre.map(el => el + " ,")}</p>
                     {
                         errors.genre && (<span className="danger">{errors.genre}</span>)
                     }
                     
                     
                 </div>
-                <input type='submit' disabled={errors.name || errors.image || errors.released || errors.rating || errors.description || errors.platforms || errors.genre? true : false}/>
+                <input type='submit' disabled={errors.name || errors.image || errors.released || errors.rating || errors.description || errors.platforms || errors.genre ? true : false}/>
                  
             </form>
         </div>

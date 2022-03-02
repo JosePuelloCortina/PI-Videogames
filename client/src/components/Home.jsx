@@ -5,7 +5,7 @@ import { useDispatch, useSelector  } from "react-redux";
 import Card from './Card';
 import './styles/Cards.css';
 
-import { getAllVideogames, getAllGenres, filterByGenres, filterRating, filterBack} from "./actions";
+import { getAllVideogames, getAllGenres, filterByGenres, filterRating, filterBack } from "./actions";
 
 import Paginado from "./Paginado";
 
@@ -18,7 +18,6 @@ export default function Home(){
     const dispatch = useDispatch();
 
     const allVideogames = useSelector((state) => state.filters);
-    const allGenres = useSelector((state) => state.genres);
     const [currentPage, setCurrentPage] = useState(1);
     const [videogamePaginado, setVideogamePaginado] = useState(15);
 
@@ -34,6 +33,8 @@ export default function Home(){
         dispatch(getAllVideogames());
         dispatch(getAllGenres());
     }, [dispatch])
+
+    
 
     function handleFilterGenre(e){
         e.preventDefault();
@@ -98,10 +99,12 @@ export default function Home(){
             
             <div className="cards row">
                 
-                {currentVideogame?.map(v => {
+
+                
+                {currentVideogame.length === 0 ? <p>No hay videogame </p> : currentVideogame?.map((v, index)=> {
                     return(
                         <Card 
-                        key = {v.id}
+                        key = {index}
                         id = {v.id}
                         name = {v.name}
                         image = {v.image}
@@ -109,6 +112,7 @@ export default function Home(){
                         />
                     )
                 })
+                
                 
                 }
                
